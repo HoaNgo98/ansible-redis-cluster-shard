@@ -7,8 +7,20 @@
     - apt-get update
     - wget http://download.redis.io/releases/redis-5.0.7.tar.gz
     - tar xzf redis-5.0.7.tar.gz
-    - cd redis-5.0.7
-    - make MALLOC=libc
+    
+- name: Run command
+  command: make MALLOC=libc
+  args:
+    chdir: /root/hoanm/redis-5.0.7
+  when:
+    - inventory_hostname == groups['redis_cluster'][0]
+    
+- name: Run command
+  command: make MALLOC=libc
+  args:
+    chdir: /root/redis-5.0.7
+  when:
+    - inventory_hostname != groups['redis_cluster'][0]
 
 - name: Create Systemd
   template: src=redis.service.first.j2 dest=/etc/systemd/system/redis.service
