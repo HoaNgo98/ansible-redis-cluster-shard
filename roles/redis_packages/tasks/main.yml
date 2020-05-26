@@ -25,12 +25,12 @@
 
 - name: Create Systemd
   template: src=redis.service.first.j2 dest=/etc/systemd/system/redis.service
-    owner=redis group=redis mode=0644
+    owner=root group=root mode=0644
   when: 
     - inventory_hostname == groups['redis_cluster'][0]
 
 - name: Create Systemd
   template: src=redis.service.j2 dest=/etc/systemd/system/redis.service
-    owner=redis group=redis mode=0644
+    owner=root group=root mode=0644
   when:
     - inventory_hostname != groups['redis_cluster'][0]
