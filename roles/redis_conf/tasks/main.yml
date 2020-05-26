@@ -1,0 +1,35 @@
+---
+- name: Change Redis Cluster Config
+  become: yes
+  become_user: root
+  command: "{{ item }}"
+  with_items:
+    - sed -i 's/# cluster-enabled yes/cluster-enabled yes/' /root/hoanm/redis-5.0.7/redis.conf
+    - sed -i 's/# cluster-config-file nodes-6379.conf/cluster-config-file nodes-6379.conf/' /root/hoanm/redis-5.0.7/redis.conf
+    - sed -i 's/# cluster-node-timeout 15000/cluster-node-timeout 15000/' /root/hoanm/redis-5.0.7/redis.conf
+    - sed -i 's/bind 127.0.0.1/bind 0.0.0.0/' /root/hoanm/redis-5.0.7/redis.conf
+    - systemctl daemon-reload
+    - systemctl start redis.service
+  when:
+    - inventory_hostname == groups['redis_cluster'][0]
+
+- name: Change Redis Cluster Config
+  become: yes
+  become_user: root
+  command: "{{ item }}"
+  with_items:
+    - sed -i 's/# cluster-enabled yes/cluster-enabled yes/' /root/redis-5.0.7/redis.conf
+    - sed -i 's/# cluster-config-file nodes-6379.conf/cluster-config-file nodes-6379.conf/' /root/redis-5.0.7/redis.conf
+    - sed -i 's/# cluster-node-timeout 15000/cluster-node-timeout 15000/' /root/redis-5.0.7/redis.conf
+    - sed -i 's/bind 127.0.0.1/bind 0.0.0.0/' /root/redis-5.0.7/redis.conf
+    - systemctl daemon-reload
+    - systemctl start redis.service
+  when:
+    - inventory_hostname != groups['redis_cluster'][0]
+
+- name: Create Redis Cluster
+  command: ./redis-cli --cluster create MYIP1:6379 MYIP2:6379 MYIP3:6379 MYIP4:6379 MYIP5:6379 MYIP6:6379  cluster-replicas 1
+  args:
+    chdir: /root/hoanm/redis-5.0.7/src/
+  when:
+    - inventory_hostname == groups['redis_cluster'][0]

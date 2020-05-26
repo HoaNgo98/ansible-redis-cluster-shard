@@ -1,0 +1,14 @@
+[Install]
+WantedBy=multi-user.target
+Alias=redis.service
+
+
+[Unit]
+Description=Example systemd service.
+
+[Service]
+Type=simple
+ExecStart=/root/redis-5.0.7/src/redis-server /root/redis-5.0.7/redis.conf
+
+[Install]
+WantedBy=multi-user.target
